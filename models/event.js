@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 
 const eventSchema = new Schema({
   hotel: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Hotel',
     required: true
   },
