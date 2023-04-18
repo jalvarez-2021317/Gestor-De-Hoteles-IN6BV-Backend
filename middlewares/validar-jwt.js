@@ -1,7 +1,7 @@
 const { request, response } = require('express');
 const jwt = require('jsonwebtoken');
 
-const Empresa = require('../models/empresa');
+const Usuario = require('../models/usuario');
 
 const validarJWT = async( req = request, res = response, next ) => {
 
@@ -19,7 +19,7 @@ const validarJWT = async( req = request, res = response, next ) => {
         const { uid } = jwt.verify( token, process.env.SECRET_OR_PRIVATE_KEY );
 
         //leer al usuario que corresponda el uid
-        const empresa = await Empresa.findById( uid );
+        const empresa = await Usuario.findById( uid );
 
         //Verificar el uid del usuario, si no existiera
         if ( !empresa ) {
