@@ -12,10 +12,6 @@ const hotelSchema = new Schema({
   descripcion: {
     type: String,
     required: true
-  },
-  precio: {
-    type: Number,
-    required: true
   }
 });
 

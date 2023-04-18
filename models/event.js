@@ -17,10 +17,6 @@ const eventSchema = new Schema({
   fecha: {
     type: Date,
     required: true
-  },
-  precio: {
-    type: Number,
-    required: true
   }
 });
 
