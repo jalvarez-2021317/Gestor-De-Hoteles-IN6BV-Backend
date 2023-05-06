@@ -67,5 +67,3 @@ hotelController.eliminarHotel = async (req, res) => {
 };
 
 module.exports = hotelController;
-
-//El manco pro 69 
