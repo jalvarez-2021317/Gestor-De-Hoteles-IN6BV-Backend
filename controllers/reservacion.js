@@ -1,10 +1,10 @@
 const {response, request} = require('express');
 
-const Reserva = require('../models/reservacion');
+const Reservacion = require('../models/reservacion');
 
 const getReservacion = async(req = request, res = response) =>{
     const query = {estado : true}
-    const listaReserva = await Reserva.find(query).populate('usuario', 'nombre').populate('habitacion', 'nombre');
+    const listaReserva = await Reservacion.find(query).populate('usuario', 'nombre').populate('habitacion', 'nombre');
 
     res.json({
         msg: 'get api reservacion',
@@ -13,13 +13,10 @@ const getReservacion = async(req = request, res = response) =>{
 }
 
 const postReservacion = async (req = request, res = response) =>{
-    const {estado, usuario, ...body} = req.body;
+    const {estado, ...body} = req.body;
 
     const data ={
-        ...body,
-        usuario: req.usuario._id,
-        habitacion: req.habitacion._id,
-        hotel: req.hotel._id
+        ...body
     };
 
     const reservacion = new Reservacion(data);
@@ -37,19 +34,30 @@ const putReservacion = async(req = request, res = response) =>{
 
     const {_id, rol, estado, ...data} = req.body;
 
-    data.usuario = req.usuario._id;
-    data.habitacion = req.habitacion._id;
-    data.hotel = req.hotel._id;
 
-    const reservacion = await Reserva.findByIdAndUpdate(id, data, {estado: true}, {new: true});
+    const reservacion = await Reservacion.findByIdAndUpdate(id, data, {estado: true}, {new: true});
 
     res.json({
-        msg: 'Put de categoria',
+        msg: 'Put de reservacion',
         reservacion
     });
 }
 
+const deleteReservacion = async (req = request, res = response) =>{
+    const {id} = req.params;
+
+    const reservacion = await Reservacion.findByIdAndUpdate(id, {estado: false}, {new: true});
+
+    res.json({
+        msg: 'Delete de reservacion',
+        reservacion
+    })
+}
+
+
 module.exports = {
     getReservacion,
-    postReservacion
+    postReservacion,
+    putReservacion,
+    deleteReservacion
 }

@@ -1,5 +1,5 @@
 const {Router} = require('express');
-const { getReservacion, postReservacion } = require('../controllers/reservacion');
+const { getReservacion, postReservacion, putReservacion, deleteReservacion } = require('../controllers/reservacion');
 
 const router = Router();
 
@@ -7,8 +7,8 @@ router.get('/', getReservacion);
 
 router.post('/agregar', postReservacion);
 
-// router.put('/editar/:id', putReservacion);
+router.put('/editar/:id', putReservacion);
 
-// router.delete('/eliminar/:id', deleteReservacion);
+router.delete('/eliminar/:id', deleteReservacion);
 
 module.exports = router
