@@ -12,6 +12,7 @@ class Server {
             usuario: '/api/usuarios',
             events:'/api/events',
             auth:'/api/auth',
+            hoteles:'/api/hoteles',
             habitaciones: '/api/habitaciones',
             reservacion: '/api/reservaciones',
             factura: '/api/facturas'
@@ -52,6 +53,7 @@ class Server {
     routes(){
         this.app.use( this.paths.usuario , require('../routes/usuario') );
         this.app.use(this.paths.events, require('../routes/event'));
+        this.app.use(this.paths.hoteles, require('../routes/hotel'));
         this.app.use(this.paths.auth,require('../routes/auth'));
         this.app.use(this.paths.habitaciones, require('../routes/habitacion'));
         this.app.use(this.paths.reservacion, require('../routes/reservacion'));

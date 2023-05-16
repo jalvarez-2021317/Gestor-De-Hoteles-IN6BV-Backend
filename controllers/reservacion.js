@@ -29,19 +29,21 @@ const postReservacion = async (req = request, res = response) =>{
     })
 }
 
-const putReservacion = async(req = request, res = response) =>{
-    const {id} = req.params;
+const putReservacion = async (req = request, res = response) => {
+    const { id } = req.params;
+    const { _id, rol, estado, ...data } = req.body;
 
-    const {_id, rol, estado, ...data} = req.body;
-
-
-    const reservacion = await Reservacion.findByIdAndUpdate(id, data, {estado: true}, {new: true});
+    const reservacion = await Reservacion.findByIdAndUpdate(id, data, {
+        estado: true,
+        new: true
+    });
 
     res.json({
         msg: 'Put de reservacion',
         reservacion
     });
 }
+
 
 const deleteReservacion = async (req = request, res = response) =>{
     const {id} = req.params;
