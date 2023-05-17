@@ -2,15 +2,32 @@ const {response, request} = require('express');
 
 const Reservacion = require('../models/reservacion');
 
-const getReservacion = async(req = request, res = response) =>{
-    const query = {estado : true}
-    const listaReserva = await Reservacion.find(query).populate('usuario', 'nombre').populate('habitacion', 'nombre');
-
-    res.json({
-        msg: 'get api reservacion',
-        listaReserva
-    })
-}
+const getReservacion = async (req = request, res = response) => {
+    try {
+      const query = { estado: true };
+      const listaReserva = await Reservacion.find(query)
+        .populate("hotel", "nombre") // Poblar el campo "hotel" y seleccionar solo la propiedad "nombre"
+        .populate("usuario", "nombre") // Poblar el campo "usuario" y seleccionar solo la propiedad "nombre"
+        .populate("habitacion", "nombre"); // Poblar el campo "habitacion" y seleccionar solo la propiedad "nombre"
+        
+      const reservaciones = listaReserva.map((reservacion) => ({
+        _id: reservacion._id,
+        hotel: reservacion.hotel.nombre,
+        usuario: reservacion.usuario.nombre,
+        habitacion: reservacion.habitacion.nombre,
+        cantidad: reservacion.cantidad,
+        estado: reservacion.estado,
+      }));
+  
+      res.json(reservaciones);
+    } catch (error) {
+      res.status(500).json({
+        error: "Error al obtener las reservaciones",
+      });
+    }
+  };
+  
+  
 
 const postReservacion = async (req = request, res = response) =>{
     const {estado, ...body} = req.body;

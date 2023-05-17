@@ -1,11 +1,11 @@
 const {response, request} = require('express');
 
-const Habitacion = require('../models/habitacion');
+const habitacion = require('../models/habitacion');
 
 const getHabitacion = async (req = request, res = response) =>{
     const listaHabitaciones = await Promise.all([
-        Habitacion.countDocuments(),
-        Habitacion.find()
+        habitacion.countDocuments(),
+        habitacion.find()
     ]);
 
     res.json({
@@ -17,7 +17,7 @@ const getHabitacion = async (req = request, res = response) =>{
 const postHabitacion = async (req = request, res= response) =>{
     const {usuario, ...body} = req.body
 
-    const habitacionEnDB = await Habitacion.findOne({nombre: body.nombre});
+    const habitacionEnDB = await habitacion.findOne({nombre: body.nombre});
 
     if (habitacionEnDB) {
         return res.status(400).json({
@@ -30,7 +30,7 @@ const postHabitacion = async (req = request, res= response) =>{
         nombre: body.nombre
     }
 
-    const habitacion = new Habitacion(data);
+    const habitacion = new habitacion(data);
 
     await habitacion.save();
 
@@ -48,7 +48,7 @@ const putHabitacion = async (req = request, res = response) =>{
         data.nombre = data.nombre
     }
 
-    const habitacion = await Habitacion.findByIdAndUpdate(id, data);
+    const habitacion = await habitacion.findByIdAndUpdate(id, data);
 
     res.json({
         msg: 'Put API de habitaciones',
@@ -59,7 +59,7 @@ const putHabitacion = async (req = request, res = response) =>{
 const deleteHabitacion = async (req = request, res = response) =>{
     const {id} = req.params;
 
-    const habitacion = await Habitacion.findByIdAndDelete(id);
+    const habitacion = await habitacion.findByIdAndDelete(id);
 
     res.json({
         msg: 'Delete API de habitaciones',

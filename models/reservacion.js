@@ -1,27 +1,30 @@
-const {Schema, model} = require('mongoose');
+const { Schema, model } = require('mongoose');
 
-const reservacionSchema = ({
+const reservacionSchema = new Schema({
     usuario: {
         type: Schema.Types.ObjectId,
-        require: true
+        ref: 'Usuario', // Referencia al modelo 'Usuario'
+        required: true
     },
     habitacion: {
         type: Schema.Types.ObjectId,
-        require: true
+        ref: 'Habitacion', // Referencia al modelo 'Habitacion'
+        required: true
     },
     cantidad: {
         type: Number,
-        require: true
+        required: true
     },
     estado: {
         type: Boolean,
-        require: true,
+        required: true,
         default: true
     },
-    hotel:{
+    hotel: {
         type: Schema.Types.ObjectId,
-        require: true
+        ref: 'Hotel', // Referencia al modelo 'Hotel'
+        required: true
     }
 });
 
-module.exports = model('Reservacion', reservacionSchema)
+module.exports = model('Reservacion', reservacionSchema);
