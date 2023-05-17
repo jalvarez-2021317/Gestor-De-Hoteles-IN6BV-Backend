@@ -3,11 +3,13 @@ const{Schema, model} = require('mongoose');
 const facturaSchema = ({
     usuario: {
         type: Schema.Types.ObjectId,
-        require: true
+        require: true,
+        ref:"Usuario"
     },
     reserva: {
         type: Schema.Types.ObjectId,
-        require: true
+        require: true,
+        ref:"Reservacion"
     },
     total: {
         type: Number,
