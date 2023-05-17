@@ -1,75 +1,82 @@
-const {response, request} = require('express');
+const { response, request } = require('express');
+const Habitacion = require('../models/habitacion');
 
-const habitacion = require('../models/habitacion');
+const getHabitacion = async (req = request, res = response) => {
+    try {
+        const habitacionesDisponibles = await Habitacion.countDocuments({ estado: 'disponible' });
 
-const getHabitacion = async (req = request, res = response) =>{
-    const listaHabitaciones = await Promise.all([
-        habitacion.countDocuments(),
-        habitacion.find()
-    ]);
-
-    res.json({
-        msg: 'Get API de habitaciones',
-        listaHabitaciones
-    })
-}
-
-const postHabitacion = async (req = request, res= response) =>{
-    const {usuario, ...body} = req.body
-
-    const habitacionEnDB = await habitacion.findOne({nombre: body.nombre});
-
-    if (habitacionEnDB) {
-        return res.status(400).json({
-            msg: `La habitacion ${habitacionEnDB.nombre} ya existe en la base de datos`
-        })
+        res.json({
+            msg: 'API de habitaciones - Obtener habitaciones',
+            habitacionesDisponibles
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener las habitaciones' });
     }
+};
 
-    const data = {
-        ... body,
-        nombre: body.nombre
+const postHabitacion = async (req = request, res = response) => {
+    const { usuario, ...body } = req.body;
+
+    try {
+        const habitacionEnDB = await Habitacion.findOne({ nombre: body.nombre });
+
+        if (habitacionEnDB) {
+            return res.status(400).json({
+                msg: `La habitacion ${habitacionEnDB.nombre} ya existe en la base de datos`
+            });
+        }
+
+        const habitacion = new Habitacion(body);
+
+        await habitacion.save();
+
+        res.json({
+            msg: 'API de habitaciones - Crear habitacion',
+            habitacion
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al crear la habitacion' });
     }
+};
 
-    const habitacion = new habitacion(data);
-
-    await habitacion.save();
-
-    res.json({
-        msg: 'Post API de habitaciones',
-        habitacion
-    })
-}
-
-const putHabitacion = async (req = request, res = response) =>{
-    const {id} = req.params;
-    const {_id, usuario, ...data} = req.body;
+const putHabitacion = async (req = request, res = response) => {
+    const { id } = req.params;
+    const { _id, usuario, ...data } = req.body;
 
     if (data.nombre) {
         data.nombre = data.nombre
     }
 
-    const habitacion = await habitacion.findByIdAndUpdate(id, data);
+    try {
+        const habitacion = await Habitacion.findByIdAndUpdate(id, data, { new: true });
 
-    res.json({
-        msg: 'Put API de habitaciones',
-        habitacion
-    })
-}
+        res.json({
+            msg: 'API de habitaciones - Actualizar habitacion',
+            habitacion
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al actualizar la habitacion' });
+    }
+};
 
-const deleteHabitacion = async (req = request, res = response) =>{
-    const {id} = req.params;
+const deleteHabitacion = async (req = request, res = response) => {
+    const { id } = req.params;
 
-    const habitacion = await habitacion.findByIdAndDelete(id);
+    try {
+        const habitacion = await Habitacion.findByIdAndDelete(id);
 
-    res.json({
-        msg: 'Delete API de habitaciones',
-        habitacion
-    })
-}
+        res.json({
+            msg: 'API de habitaciones - Eliminar habitacion',
+            habitacion
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al eliminar la habitacion' });
+    }
+};
 
-module.exports= {
+module.exports = {
     getHabitacion,
     postHabitacion,
     putHabitacion,
     deleteHabitacion
-}
+};
