@@ -12,9 +12,13 @@ const hotelSchema = new Schema({
   descripcion: {
     type: String,
     required: true
+  },
+  administrador: {
+    type: Schema.Types.ObjectId,
+    ref: 'Usuario',
+    required: true
   }
 });
-
 
 
 module.exports = model('Hotel', hotelSchema);;

@@ -17,8 +17,8 @@ hotelController.obtenerHoteles = async (req, res) => {
 
 // Crear un nuevo hotel
 hotelController.crearHotel = async (req, res) => {
-  const { nombre, direccion, descripcion } = req.body;
-  const hotel = new Hotel({ nombre, direccion, descripcion });
+  const { nombre, direccion, descripcion,administrador } = req.body;
+  const hotel = new Hotel({ nombre, direccion, descripcion,administrador });
 
   try {
     await hotel.save();
@@ -34,12 +34,12 @@ hotelController.crearHotel = async (req, res) => {
 // Actualizar un hotel existente
 hotelController.actualizarHotel = async (req, res) => {
   const { id } = req.params;
-  const { nombre, direccion, descripcion } = req.body;
+  const { nombre, direccion, descripcion,administrador } = req.body;
 
   try {
     const hotel = await Hotel.findByIdAndUpdate(
       id,
-      { nombre, direccion, descripcion },
+      { nombre, direccion, descripcion,administrador },
       { new: true }
     );
     res.json(hotel);
@@ -65,5 +65,8 @@ hotelController.eliminarHotel = async (req, res) => {
     });
   }
 };
+
+
+
 
 module.exports = hotelController;

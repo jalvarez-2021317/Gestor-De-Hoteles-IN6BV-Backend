@@ -26,6 +26,48 @@ const getReservacion = async (req = request, res = response) => {
       });
     }
   };
+
+
+  const buscarUsuarioHospedado = async (req, res) => {
+    try {
+      const { usuarioId } = req.params; // Obtén el ID del usuario desde los parámetros de la ruta
+      const hotelId = req.usuario.hotel; // Obtén el ID del hotel del Admin desde el token
+  
+      // Busca una reservación que coincida con el ID del usuario y el ID del hotel del Admin
+      const reservacion = await Reservacion.findOne({
+        usuario: usuarioId,
+        hotel: hotelId
+      }).populate('usuario', 'nombre'); // Poblar el campo "usuario" y seleccionar solo la propiedad "nombre"
+  
+      if (!reservacion) {
+        return res.status(404).json({
+          message: 'El usuario no está hospedado en este hotel'
+        });
+      }
+  
+      res.json(reservacion);
+    } catch (error) {
+      res.status(500).json({ error: 'Error al buscar el usuario hospedado' });
+    }
+  };
+
+const obtenerReservacionesHotel = async (req, res) => {
+  try {
+    const hotelId = req.usuario.hotel; // Obtén el ID del hotel del Admin desde el token
+
+    // Busca todas las reservaciones relacionadas con el hotel del Admin
+    const reservaciones = await Reservacion.find({ hotel: hotelId })
+      .populate('usuario', 'nombre') // Poblar el campo "usuario" y seleccionar solo la propiedad "nombre"
+      .populate('habitacion', 'nombre'); // Poblar el campo "habitacion" y seleccionar solo la propiedad "nombre"
+
+    res.json(reservaciones);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener las reservaciones' });
+  }
+};
+
+
+
   
   
 
@@ -78,5 +120,7 @@ module.exports = {
     getReservacion,
     postReservacion,
     putReservacion,
-    deleteReservacion
+    deleteReservacion,
+    obtenerReservacionesHotel,
+    buscarUsuarioHospedado
 }
