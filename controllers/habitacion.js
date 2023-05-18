@@ -4,15 +4,33 @@ const Habitacion = require('../models/habitacion');
 const getHabitacion = async (req = request, res = response) => {
     try {
         const habitacionesDisponibles = await Habitacion.countDocuments({ estado: 'disponible' });
+        const habitacion = await Habitacion.find({ estado: 'disponible' })
 
         res.json({
             msg: 'API de habitaciones - Obtener habitaciones',
-            habitacionesDisponibles
+            habitacionesDisponibles,
+            habitacion
         });
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener las habitaciones' });
     }
 };
+
+getHabitacionPorHotel = async( req = request, res = response) =>{
+    const {id} = req.params
+
+    try {
+        const habitacionesDisponibles = await Habitacion.countDocuments({ estado: 'disponible'}, {hotel: id})
+        const habitacion = await Habitacion.find({ estado: 'disponible'} && {hotel: id})
+        res.json({
+            msg: 'API de habitaciones - Obtener habitaciones',
+            habitacionesDisponibles,
+            habitacion
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener las habitaciones' });
+    }
+}
 
 const postHabitacion = async (req = request, res = response) => {
     const { usuario, ...body } = req.body;
@@ -76,6 +94,7 @@ const deleteHabitacion = async (req = request, res = response) => {
 
 module.exports = {
     getHabitacion,
+    getHabitacionPorHotel,
     postHabitacion,
     putHabitacion,
     deleteHabitacion
