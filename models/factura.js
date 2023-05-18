@@ -1,24 +1,38 @@
-const{Schema, model} = require('mongoose');
+const { Schema, model } = require('mongoose');
 
-const facturaSchema = ({
-    usuario: {
+const facturaSchema = new Schema({
+  usuario: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'Usuario'
+  },
+  reserva: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'Reservacion'
+  },
+  servicios: [
+    {
+      servicio: {
         type: Schema.Types.ObjectId,
-        require: true,
-        ref:"Usuario"
-    },
-    reserva: {
-        type: Schema.Types.ObjectId,
-        require: true,
-        ref:"Reservacion"
-    },
-    total: {
+        ref: 'Servicio',
+        required: true
+      },
+      cantidad: {
         type: Number,
-        require: true
-    },
-    estado: {
-        type: Boolean,
-        require: true
+        required: true
+      }
     }
+  ],  
+  total: {
+    type: Number,
+    required: true
+  },
+  estado: {
+    type: Boolean,
+    required: true
+  }
 });
+
 
 module.exports = model('Factura', facturaSchema);

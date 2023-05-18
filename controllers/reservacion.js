@@ -1,6 +1,8 @@
 const {response, request} = require('express');
 
 const Reservacion = require('../models/reservacion');
+const Habitacion = require('../models/habitacion');
+
 
 const getReservacion = async (req = request, res = response) => {
     try {
@@ -26,6 +28,35 @@ const getReservacion = async (req = request, res = response) => {
       });
     }
   };
+
+  const cancelarReservacion = async (req, res) => {
+    const { idReservacion } = req.params;
+  
+    try {
+      // Buscar la reservación por su ID
+      const reservacion = await Reservacion.findById(idReservacion);
+  
+      if (!reservacion) {
+        return res.status(404).json({ error: 'Reservación no encontrada' });
+      }
+  
+      // Obtener el ID de la habitación asociada a la reservación
+      const { habitacion } = reservacion;
+  
+      // Actualizar el estado de la habitación a "disponible"
+      const habitacionActualizada = await Habitacion.findOneAndUpdate(
+        { _id: habitacion },
+        { estado: 'ocupado' },
+        { new: true }
+      );
+  
+      res.json({ msg: 'Reservación cancelada', habitacion: habitacionActualizada });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: 'Error al cancelar la reservación' });
+    }
+  };
+  
 
 
   const buscarUsuarioHospedado = async (req, res) => {
@@ -67,26 +98,21 @@ const obtenerReservacionesHotel = async (req, res) => {
 };
 
 
-
-  
-  
-
-const postReservacion = async (req = request, res = response) =>{
-    const {estado, ...body} = req.body;
-
-    const data ={
-        ...body
-    };
+const postReservacion = async (req = request, res = response) => {
+  try {
+    const { estado, ...data } = req.body;
 
     const reservacion = new Reservacion(data);
-
     await reservacion.save();
 
     res.status(201).json({
-        msg: 'post api reservacion',
-        reservacion
-    })
-}
+      msg: 'Reservación creada',
+      reservacion
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al crear la reservación' });
+  }
+};
 
 const putReservacion = async (req = request, res = response) => {
     const { id } = req.params;
@@ -122,5 +148,6 @@ module.exports = {
     putReservacion,
     deleteReservacion,
     obtenerReservacionesHotel,
-    buscarUsuarioHospedado
+    buscarUsuarioHospedado,
+    cancelarReservacion
 }
